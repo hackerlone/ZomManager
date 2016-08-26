@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IGroupDao">
+	<resultMap id="Group" type="com.zom.cms.model.Group">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<id column="group_ts" property="groupTs" jdbcType="VARCHAR" />
+		<id column="owner_id" property="ownerId" jdbcType="VARCHAR" />
+		<id column="group_name" property="groupName" jdbcType="VARCHAR" />
+		<id column="pttid" property="pttid" jdbcType="VARCHAR" />
+		<id column="ptt_time" property="pttTime" jdbcType="VARCHAR" />
+		<id column="group_name_easemob" property="groupNameEasemob"
+			jdbcType="VARCHAR" />
+
+		<id column="create_date" property="createDate" jdbcType="VARCHAR" />
+
+		<id column="corp_id" property="corpId" jdbcType="VARCHAR" />
+		<id column="rank" property="rank" jdbcType="VARCHAR" />
+		<id column="dcg" property="dcg" jdbcType="VARCHAR" />
+		<id column="preconfig" property="preconfig" jdbcType="VARCHAR" />
+		<id column="status" property="status" jdbcType="VARCHAR" />
+		<id column="zone_id" property="zoneId" jdbcType="VARCHAR" />
+		<!-- <id column="isJoin" property="isJoin" jdbcType="VARCHAR" /> -->
+
+	</resultMap>
+
+	<!-- 获取群组总数 -->
+	<select id="findGroupCorpCount" resultType="int">
+		select count(*) from
+		rtv_group g where g.corp_id=#{corpId} and g.rank='0' and g.dcg='0' and
+		g.status!='2'
+	</select>
+	<!-- 获取群组总数 -->
+
+	<select id="findGroupCount" resultType="int">
+		select count(*) from
+		rtv_group g where g.rank='0'and g.dcg='0' and g.status!='2'
+	</select>
+
+
+
+	<!-- 获取用户分页列表集合信息 -->
+	<select id="findGroup" resultMap="Group">
+		select g.* from rtv_group g
+		where g.rank='0' and g.dcg='0' and g.status!='2'
+	</select>
+
+	<select id="findGroupEasemobNameById" resultType="string">
+		select
+		g.group_name_easemob from rtv_group g where g.id=#{id}
+	</select>
+
+	<!-- 获取用户分页列表集合信息 -->
+	<select id="findCorpGroup" resultMap="Group">
+		select g.* from rtv_group g
+		where g.corp_id=#{corpId} and g.rank='0' and g.dcg='0' and
+		g.status!='2'
+	</select>
+
+	<!-- 添加群组 -->
+	<insert id="add" parameterType="com.zom.cms.model.Group">
+		insert into
+		rtv_group(id,group_name,owner_id,
+		group_ts,pttid,ptt_time,group_name_easemob,create_date,corp_id,rank,dcg,preconfig,status,zone_id)
+		values
+		(#{id},#{groupName},#{ownerId},#{groupTs},#{pttid},#{pttTime},#{groupNameEasemob},#{createDate},#{corpId},#{rank},#{dcg},#{preconfig},#{status},#{zoneId})
+	</insert>
+
+	<!-- 更新群组 -->
+	<update id="update" parameterType="com.zom.cms.model.Group">
+		update rtv_group g set
+		g.group_name=#{groupName}, g.owner_id=#{ownerId},
+		g.status=#{status},g.group_name_easemob=#{groupNameEasemob},g.rank=#{rank},g.group_ts=#{groupTs}
+		where g.id = #{id}
+	</update>
+
+	<!-- 根据群组id删除群组信息 -->
+	<delete id="delete">
+		update rtv_group g set g.status='2' where id =
+		#{groupId}
+	</delete>
+
+	<select id="lastInsertGroupId" resultType="Long">
+		select max(id) from
+		rtv_group
+	</select>
+
+
+
+	<!-- 获取所有群组列表信息 -->
+	<select id="listGroup" resultMap="Group">
+		select g.* from rtv_group g
+		where g.rank='0' and g.dcg='0' and g.status!='2'
+	</select>
+
+	<!-- 获取所有群组列表信息 -->
+	<select id="listCorpGroup" resultMap="Group">
+		select g.* from rtv_group g
+		where g.corp_id=#{corpId} and g.rank='0' and g.dcg='0' and
+		g.status!='2'
+	</select>
+
+	<!-- 根据指定群组id获取群组信息 -->
+	<select id="load" resultMap="Group" parameterType="long">
+		select g.*
+		from rtv_group g where g.id = #{id}
+	</select>
+
+	<select id="listGroupsByUid" resultMap="Group" parameterType="long">
+		select g.* from rtv_user_group_map ug inner join rtv_group g on
+		ug.group_id=g.id where ug.user_id= #{uid}
+	</select>
+
+
+
+	<!--====================================== LHFEIYU ====================================== -->
+	<sql id="table">rtv_group</sql><!-- 表名 -->
+	<sql id="baseColumns"><!-- 基础字段 -->
+		A.*
+	</sql>
+	<sql id="baseSearch"><!-- 基础查询条件 -->
+		<if test="id != null and id != '' ">AND A.id = #{id}</if>
+		<if test="userId != null and userId != '' ">AND A.id = #{userId}</if>
+		<if test="groupName != null and groupName != '' ">AND A.group_name = #{groupName}</if>
+		<if test="status != null and status != '' ">AND A.status = #{status}</if>
+	</sql>
+	<sql id="suffix"><!-- 分组排序 -->
+		<if test="groupBy != null and groupBy !='' "> GROUP BY #{groupBy,jdbcType=VARCHAR}</if>
+		<if test="orderBy != null and orderBy !='' ">
+			<if test="selfOrder == null">ORDER BY A.${orderBy}</if>
+			<if test="selfOrder != null">ORDER BY ${orderBy}</if>
+		</if>
+		<if test="ascOrdesc != null and ascOrdesc !='' and selfOrder == null "> ${ascOrdesc}</if>
+		<if test="orderBy == null and ascOrdesc == null "> ORDER BY A.id DESC</if>
+	</sql>
+	<sql id="limitCount"><!-- 分页 -->
+		<if test="count != null and count !='' "> LIMIT ${start},${count}</if>
+	</sql>
+	<sql id="columns"><!-- 关联它表字段 -->
+	</sql>
+	<sql id="search"><!-- 业务查询条件 -->
+		<if test="phone != null and phone !=''">
+			AND A.phone = #{phone}
+		</if>
+		<if test="phoneLike != null and phoneLike !=''">
+			AND A.phone LIKE '%${phoneLike}%'
+		</if>
+		<if test="corpId != null and corpId !=''">
+			AND A.corp_id = #{corpId}
+		</if>
+		AND A.status != '2'
+	</sql>
+	<sql id="leftJoin"><!-- 表关联 -->
+	</sql>
+
+	<select id="selectListByCondition" parameterType="java.util.Map"
+		resultMap="Group">
+		SELECT
+		A.*
+		FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+		<include refid="suffix" />
+		<include refid="limitCount" />
+	</select>
+
+	<select id="selectByCondition" parameterType="java.util.Map"
+		resultMap="Group">
+		SELECT
+		<include refid="baseColumns" />
+		<include refid="columns" />
+		FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+		<include refid="suffix" />
+		LIMIT 0,1
+	</select>
+
+
+	<select id="selectCountByCondition" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+	</select>
+	<!--====================================== LHFEIYU ====================================== -->
+	<select id="selectListByUserCondition" parameterType="java.util.Map"
+		resultMap="Group">
+		SELECT A.*, coalesce((select RUG.group_id FROM rtv_user_group_map RUG WHERE
+		1=1 AND RUG.user_id = #{usersId} AND RUG.group_id = A.id),'0')
+		AS isJoin FROM rtv_group A WHERE 1=1 AND  A.status != '2'
+		ORDER BY isJoin DESC
+		<include refid="limitCount"/>
+	</select>
+	<select id="selectCountByUserCondition" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1 AND A.status != '2'
+		<include refid="baseSearch" />
+		<include refid="search" />
+	</select>
+
+	<delete id="deleteByCorpId">
+		delete from rtv_group  where corp_id =
+		#{corpId}
+	</delete>
+
+</mapper>

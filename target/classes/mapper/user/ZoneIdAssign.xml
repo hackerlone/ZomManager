@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.ICorporationDao">
+	<resultMap id="ZoneIdAssign" type="com.zom.cms.model.ZoneIdAssign">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<id column="name" property="name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	
+	<!--====================================== LHFEIYU ======================================-->
+	<select id="selectAllAssign" resultMap="ZoneIdAssign">
+		select A.* from zone_id_assign A 
+	</select>
+</mapper>

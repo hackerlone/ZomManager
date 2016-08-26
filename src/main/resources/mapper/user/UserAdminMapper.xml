@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IUserDao">
+	<resultMap id="UserAdmin" type="com.zom.cms.model.UserAdmin">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<id column="user_id" property="userId" jdbcType="BIGINT" />
+		<id column="admin_id" property="adminId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!-- 根据admin id获取admin 下所有用户的信息 -->
+	<select id="listAdminUsers" resultMap="UserAdmin" >
+		select ug.user_id from rtv_user_admin_mapping ug where ug.admin_id = #{adminIds}
+	</select>
+	
+	<!-- 删除admin中的所有用户信息 -->
+	<delete id="deleteAdminUsers">
+		delete from rtv_user_admin_mapping where admin_id = #{adminId}
+	</delete>
+	
+		<!-- 删除user中的所有admin -->
+	<delete id="deleteUserAdmins">
+		delete from rtv_user_admin_mapping where user_id = #{userId}
+	</delete>
+	
+	<!-- 根据用户id和群组id获取用户群组对应关系 -->
+	<select id="loadUserAdmin" resultMap="UserAdmin" parameterType="java.util.Map">
+		select * from rtv_user_admin_mapping ug where ug.admin_id = #{adminId} and ug.user_id = #{userId}
+	</select>
+	  
+	<select id="listUserAdmin" resultMap="UserAdmin">
+		select * from rtv_user_admin_mapping ug where ug.user_id = #{userId}
+	</select>
+	
+	<!-- 添加用户角色信息 -->
+	<insert id="addUserAdmin">
+		insert into rtv_user_admin_mapping(admin_id,user_id)values( #{adminId},#{userId})
+	</insert>
+	
+	<!-- 根据用户id获取此用户所对应所有的组id集合 -->
+	<select id="listUserAmdinIds" resultType="Long"  parameterType="Long">
+		select ug.admin_id from rtv_user_admin_mapping ug where ug.user_id = #{userId}
+	</select>
+	
+	<!-- 删除用户Admin关联关系 -->
+	<delete id="deleteUserAdmin">
+		delete from rtv_user_admin_mapping where admin_id = #{adminId} and user_id = #{userId}
+	</delete>
+	<delete id="deleteByAdminId">
+		delete from rtv_user_admin_mapping where admin_id = #{adminId}
+	</delete>
+		
+	<select id="listAdminUserId"  resultMap="UserAdmin" parameterType="Long">
+		select g.user_id from rtv_user_admin_mapping g where g.admin_id = #{adminId}
+     </select>
+     
+<select id="listAdminAllUsers"  resultMap="User" parameterType="Long">
+		select * from rtv_user ru where ru.id in(
+			select g.user_id from rtv_user_admin_mapping g where g.admin_id = #{adminId}
+		)
+     </select>
+
+
+	<select id="listUsersByConsoleId" resultMap="UserAdmin" parameterType="Long">
+		select g.id, 
+		g.display_name 
+		from rtv_user_admin_mapping ug inner join rtv_user g on ug.user_id=g.id where ug.admin_id= #{adminId}
+	</select>
+	
+	<select id="listFullUsersByConsoleId" resultMap="UserAdmin" parameterType="Long">
+		select g.*
+		from rtv_user_admin_mapping ug inner join rtv_user g on ug.user_id=g.id where ug.admin_id= #{adminId}
+	</select>
+	
+	<select id="listUsersNameByConsoleId" resultType="String" parameterType="Long">
+		select g.display_name		 
+		from rtv_user_admin_mapping ug inner join rtv_user g on ug.user_id=g.id where ug.admin_id= #{adminId}
+	</select>
+	
+	<select id="listConsoleNameByIds" resultType="String" parameterType="Long">
+		select  g.display_name
+	 from rtv_user_admin_mapping ug inner join rtv_user g on ug.admin_id=g.id where ug.user_id= #{userId}	
+	
+	</select>
+
+	<select id="listUsersIdByConsoleId" resultType="Long" parameterType="Long">
+		select g.id		
+		from rtv_user_admin_mapping ug inner join rtv_user g on ug.user_id=g.id where ug.admin_id= #{adminId} 
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.ITuIdDao">
+	<resultMap id="TuId" type="com.zom.cms.model.TuId">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<id column="name" property="name" jdbcType="VARCHAR" />
+		<id column="max_uid" property="maxUid" jdbcType="VARCHAR" />
+		<id column="max_tgid" property="maxTgid" jdbcType="VARCHAR" />
+		<id column="cur_uid" property="curUid" jdbcType="VARCHAR" />
+		<id column="cur_tgid" property="curTgid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="findZonesCount" resultType="int">
+		select 
+			 count(1) 
+		from zone_id_assign
+	</select>
+	
+	<select id="findZones" resultMap="TuId">
+		select 
+			u.*
+		from zone_id_assign
+	</select>
+	
+	<insert id="add"    parameterType="com.zom.cms.model.TuId">
+		insert into zone_id_assign(name,max_uid,max_tgid,cur_uid,cur_tgid},#{name},#{maxUid},#{maxTgid},#{curUid},#{curTgid})
+	</insert>
+	
+	<select id="load" resultMap="TuId" parameterType="int">
+		select 
+			u.*
+		from zone_id_assign u where u.id = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.zom.cms.model.TuId">
+		update zone_id_assign u set  u.cur_uid = #{curUid},u.cur_tgid = #{curTgid} where u.id = #{id}
+	</update>
+
+	<update id="updateUid"  parameterType="com.zom.cms.model.TuId">
+		update zone_id_assign u set  u.cur_uid = u.cur_uid+1 where u.id = #{id}
+
+	</update> 
+	
+	
+	<update id="updateTgid" parameterType="com.zom.cms.model.TuId">
+		update zone_id_assign u set  u.cur_tgid = u.cur_tgid +1 where u.id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		update rtv_corp_table u set u.status='2' where id = #{id}
+	</update>
+	
+	
+</mapper>

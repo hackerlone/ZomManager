@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IUserDao">
+	<resultMap id="User" type="com.zom.cms.model.User">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<id column="display_name" property="displayName" jdbcType="VARCHAR" />
+		<id column="user_password" property="userPassword" jdbcType="VARCHAR" />
+		<id column="client_version" property="clientVersion" jdbcType="VARCHAR" />
+		<id column="device" property="device" jdbcType="VARCHAR" />
+		<id column="push_id" property="pushId" jdbcType="VARCHAR" />
+		<id column="push_password" property="pushPassword" jdbcType="VARCHAR" />
+		<id column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+		<id column="phone" property="phone" jdbcType="VARCHAR" />
+		<id column="register_date" property="registerDate" jdbcType="VARCHAR" />
+		<id column="last_logon_date" property="lastLogonDate" jdbcType="VARCHAR" />
+		<id column="last_access_date" property="lastAccessDate" jdbcType="VARCHAR" />
+		<id column="last_logon_ip" property="lastLogonIp" jdbcType="VARCHAR" />
+		<id column="logon_state" property="logonState" jdbcType="VARCHAR" />
+		<id column="salt" property="salt" jdbcType="VARCHAR" />
+		<id column="ts_profile" property="tsProfile" jdbcType="VARCHAR" />
+		<id column="ts_group" property="tsGroup" jdbcType="VARCHAR" />
+		<id column="rank" property="rank" jdbcType="VARCHAR" />
+		<id column="admin_id" property="adminId" jdbcType="VARCHAR" />
+		<id column="dcg_id" property="dcgId" jdbcType="VARCHAR" />
+		<id column="corp_id" property="corpId" jdbcType="VARCHAR" />
+		<id column="priority" property="priority" jdbcType="VARCHAR" />
+		<id column="logon_name" property="logonName" jdbcType="VARCHAR" />
+		<id column="status" property="status" jdbcType="VARCHAR" />
+		<id column="preconfig" property="preconfig" jdbcType="VARCHAR" />
+		<id column="default_grp" property="defaultGrp" jdbcType="VARCHAR" />
+		<id column="adm_ts" property="admTs" jdbcType="VARCHAR" />
+		<id column="zone_id" property="zoneId" jdbcType="INTEGER" />
+		<id column="isJoin" property="isJoin" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="loadByUsername" resultMap="User" parameterType="string">
+		select
+		u.*
+		from rtv_user u where logon_name= #{logonName}
+	</select>
+
+	<select id="loadByPhone" resultMap="User" parameterType="string">
+		select
+		u.*
+		from rtv_user u where phone= #{phone}
+	</select>
+
+	<select id="findUserCount" resultType="int">
+		select
+		count(1)
+		from
+		rtv_user u where u.rank='0' and u.status!='2'
+	</select>
+
+	<select id="findConsoleCount" resultType="int">
+		select
+		count(1)
+		from
+		rtv_user u where u.rank=#{rank} and u.status!='2'
+	</select>
+
+	<select id="findCorpUserCount" resultType="int">
+		select
+		count(1)
+		from
+		rtv_user u where u.corp_id=#{corpId} and u.rank='0' and u.status!='2'
+	</select>
+
+	<select id="findCorpConsoleCount" resultType="int">
+		select
+		count(1)
+		from
+		rtv_user u where u.corp_id=#{corpId} and u.rank=#{rank} and
+		u.status!='2'
+	</select>
+
+	<select id="findCorpAllConsoleCount" resultType="int">
+		select
+		count(1)
+		from rtv_user u where u.corp_id=#{corpId} and u.rank!='0' and
+		u.status!='2'
+	</select>
+
+	<select id="findUser" resultMap="User">
+		select u.* from rtv_user u where
+		u.rank='0' and u.status!='2'
+	</select>
+
+	<select id="findConsole" resultMap="User">
+		select u.* from rtv_user u
+		where u.rank=#{rank} and u.status!='2'
+	</select>
+
+	<select id="findCorpUser" resultMap="User">
+		select
+		u.*
+		from rtv_user u
+		where u.corp_id=#{corpId} and u.rank='0' and
+		u.status!='2'
+	</select>
+
+	<select id="findCorpAllUser" resultMap="User">
+		select
+		u.*
+		from rtv_user u
+		where u.corp_id=#{corpId} and u.rank='0' and
+		u.status!='2'
+	</select>
+
+	<select id="findCorpConsole" resultMap="User">
+		select
+		u.*
+		from rtv_user u
+		where u.corp_id=#{corpId} and u.rank=#{rank} and
+		u.status!='2'
+	</select>
+
+
+
+	<select id="findCorpConsoleList" resultMap="User">
+		select
+		u.*
+		from
+		rtv_user u where u.corp_id=#{corpId} and u.rank=#{rank} and
+		u.status!='2'
+	</select>
+
+
+	<insert id="add" parameterType="com.zom.cms.model.User">
+		insert into
+		rtv_user(id,display_name,user_password,client_version,device,push_id,push_password,
+		img_url,phone,register_date,last_logon_date,last_access_date,last_logon_ip,logon_state,
+		salt,ts_profile,ts_group,rank,admin_id,dcg_id,corp_id,priority,logon_name,status,preconfig,default_grp,adm_ts,zone_id)
+
+		values(#{id},#{displayName},#{userPassword},#{clientVersion},#{device},#{pushId},#{pushPassword},#{imgUrl},
+		#{phone},#{registerDate},#{lastLogonDate},#{lastAccessDate},#{lastLogonIp},#{logonState},#{salt},#{tsProfile},#{tsGroup},
+		#{rank},#{adminId},#{dcgId},#{corpId},#{priority},#{logonName},#{status},#{preconfig},#{defaultGrp},#{admTs},#{zoneId})
+	</insert>
+
+	<select id="load" resultMap="User" parameterType="long">
+		select
+		u.*
+		from
+		rtv_user u where u.id = #{id}
+	</select>
+
+	<update id="update" parameterType="com.zom.cms.model.User">
+		update rtv_user u set
+		u.display_name = #{displayName},u.phone = #{phone},u.admin_id =
+		#{adminId},u.rank = #{rank},
+		u.push_id = #{pushId}, u.push_password =
+		#{pushPassword},u.priority =
+		#{priority},u.ts_profile=#{tsProfile},u.ts_group=#{tsGroup},u.dcg_id=#{dcgId},u.status=#{status},u.logon_name=#{logonName},
+		u.user_password = #{userPassword},u.adm_ts = #{admTs} where u.id =
+		#{id}
+	</update>
+
+
+
+	<delete id="delete">
+		update rtv_user u set u.status='2' where id =
+		#{userId}
+	</delete>
+
+	<delete id="deleteByCorpId">
+		delete from rtv_user where corp_id =
+		#{corpId}
+	</delete>
+
+
+
+	<select id="listUsersByGid" resultMap="User" parameterType="long">
+		select
+		u.*
+		from rtv_user_group_map ug inner join rtv_user u on
+		ug.user_id = u.id
+		where ug.group_id= #{groupId}
+	</select>
+
+
+
+
+	<select id="listCorpConsoles" resultMap="User" parameterType="int">
+		select
+		u.*
+		from rtv_user u where u.rank!='0' and u.corp_id=#{corpId} and
+		u.status!=2
+	</select>
+
+
+
+
+	<!--====================================== LHFEIYU ====================================== -->
+	<sql id="table">rtv_user</sql><!-- 表名 -->
+	<sql id="baseColumns"><!-- 基础字段 -->
+		A.*
+	</sql>
+	<sql id="baseSearch"><!-- 基础查询条件 -->
+		<if test="id != null and id != '' ">AND A.id = #{id}</if>
+		<if test="userId != null and userId != '' ">AND A.id = #{userId}</if>
+		<if test="status != null and status != '' ">AND A.status = #{status}</if>
+	</sql>
+	<sql id="suffix"><!-- 分组排序 -->
+		<if test="groupBy != null and groupBy !='' "> GROUP BY #{groupBy,jdbcType=VARCHAR}</if>
+		<if test="orderBy != null and orderBy !='' ">
+			<if test="selfOrder == null">ORDER BY A.${orderBy}</if>
+			<if test="selfOrder != null">ORDER BY ${orderBy}</if>
+		</if>
+		<if test="ascOrdesc != null and ascOrdesc !='' and selfOrder == null "> ${ascOrdesc}</if>
+		<if test="orderBy == null and ascOrdesc == null "> ORDER BY A.id DESC</if>
+	</sql>
+	<sql id="limitCount"><!-- 分页 -->
+		<if test="count != null and count !='' "> LIMIT ${start},${count}</if>
+	</sql>
+	<sql id="columns"><!-- 关联它表字段 -->
+	</sql>
+	<sql id="search"><!-- 业务查询条件 -->
+		<if test="displayName != null and displayName !=''">
+			AND A.display_name = #{displayName}
+		</if>
+		<if test="username != null and username !=''">
+			AND A.username LIKE '%${username}%'
+		</if>
+		<if test="email != null and email !=''">
+			AND A.email = #{email}
+		</if>
+		<if test="phone != null and phone !=''">
+			AND A.phone = #{phone}
+		</if>
+		<if test="rank != null and rank !=''">
+			AND A.rank = #{rank}
+		</if>
+		<if test="corpId != null and corpId !=''">
+			AND A.corp_id = #{corpId}
+		</if>
+		<if test="displayNameLike != null and displayNameLike !=''">
+			AND A.display_name LIKE '%${displayNameLike}%'
+		</if>
+		<if test="nicknameLike != null and nicknameLike !=''">
+			AND A.display_name LIKE '%${nicknameLike}%'
+		</if>
+		<if test="phoneLike != null and phoneLike !=''">
+			AND A.phone LIKE '%${phoneLike}%'
+		</if>
+		AND A.status != '2'
+	</sql>
+	<sql id="leftJoin"><!-- 表关联 -->
+	</sql>
+
+	<select id="selectListByCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT
+		A.*
+		FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+		<include refid="suffix" />
+		<include refid="limitCount" />
+	</select>
+
+	<select id="selectByCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT
+		<include refid="baseColumns" />
+		<include refid="columns" />
+		FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+		<include refid="suffix" />
+		LIMIT 0,1
+	</select>
+
+	<select id="selectCountByCondition" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+	</select>
+	<!--====================================== LHFEIYU ====================================== -->
+
+	<select id="selectListByUserCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT A.*, coalesce((select RUG.user_id FROM rtv_user_group_map RUG
+		WHERE
+		1=1 AND RUG.user_id = A.id AND RUG.group_id = #{groupId}),'0')
+		AS
+		isJoin FROM rtv_user A WHERE 1=1 AND A.status != '2' AND A.corp_id =
+		#{corpId}
+		ORDER BY isJoin DESC
+		<include refid="limitCount" />
+	</select>
+
+	<select id="selectConsolerDtoListByUserCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT A.*, coalesce(
+		(select RUG.user_id FROM rtv_user_admin_mapping RUG WHERE 1=1 AND RUG.user_id
+		= A.id AND RUG.admin_id = #{groupId}),'0')
+		AS isJoin FROM rtv_user A WHERE 1=1
+		AND A.status != '2' AND A.corp_id = #{corpId} AND A.rank = #{rankNum}
+		ORDER BY isJoin DESC 
+		<include refid="limitCount" />
+	</select>
+	
+	<select id="selectConsolerDtoList2ByUserCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT A.*, coalesce(
+		(select RUG.console_id FROM rtv_consoler_user_mapping RUG WHERE 1=1 AND RUG.user_name
+		= #{logonName} AND RUG.console_id = A.id),'0')
+		AS isJoin FROM rtv_user A WHERE 1=1
+		AND A.status != '2' AND A.corp_id = #{corpId} AND A.rank = #{rankNum}
+		ORDER BY isJoin DESC 
+		<include refid="limitCount" />
+	</select>
+	
+	<select id="selectConsolerDtoList1ByUserCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT A.*, coalesce(
+		(select RUG.console_id FROM rtv_consoler_user_mapping RUG WHERE 1=1 AND RUG.user_name
+		= A.logon_name AND RUG.console_id = #{usersId}),'0')
+		AS isJoin FROM rtv_user A WHERE 1=1
+		AND A.status != '2' AND A.corp_id = #{corpId} AND A.rank = #{rankNum}
+		ORDER BY isJoin DESC 
+		<include refid="limitCount" />
+	</select>
+	
+	<!-- <select id="selectUserConsolerDtoListByUserCondition" parameterType="java.util.Map"
+		resultMap="User">
+		SELECT A.*, coalesce(
+		(select RUG.user_id FROM rtv_user_admin_mapping RUG WHERE 1=1 AND RUG.user_id
+		= A.id AND RUG.admin_id = #{userId}),'0')
+		AS isJoin FROM rtv_user A WHERE 1=1
+		AND A.status != '2' AND A.corp_id = #{corpId} AND A.rank = #{rankNum}
+		ORDER BY isJoin DESC 
+		<include refid="limitCount" />
+	</select> -->
+
+	<select id="selectCountByUserCondition" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM
+		<include refid="table" />
+		A
+		<include refid="leftJoin" />
+		WHERE 1=1
+		<include refid="baseSearch" />
+		<include refid="search" />
+	</select>
+
+
+
+</mapper>

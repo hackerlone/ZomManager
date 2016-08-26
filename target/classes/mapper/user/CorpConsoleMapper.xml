@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IUserDao">
+	<resultMap id="CorpConsole" type="com.zom.cms.model.CorpConsole">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<id column="console_id" property="console_id" jdbcType="VARCHAR" />
+		<id column="corp_id" property="corp_id" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 根据群组id获取群组下用户的信息 -->
+	<select id="listConsolesByCorpId" resultMap="CorpConsole" >
+		select cc.console_id from console_corp_mapping cc where cc.corp_id = #{consoleId}
+	</select>
+	
+	<!-- 删除公司中的console -->
+	<delete id="deleteCoprConsoles">
+		delete from console_corp_mapping where corp_id = #{corpId}
+	</delete>
+
+	<!-- 添加用户角色信息 -->
+	<insert id="addConsoleCorps">
+		insert into console_corp_mapping(console_id,corp_id)values( #{consoleId},#{corpId})
+	</insert>
+	
+	
+</mapper>

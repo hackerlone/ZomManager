@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IBMSVerDao">
+	<resultMap id="BmsVer" type="com.zom.cms.model.BmsVer">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<id column="server_version" property="serverVersion" jdbcType="VARCHAR" />
+		<id column="client_os_type" property="clientOsType" jdbcType="VARCHAR" />
+		<id column="client_version" property="clientVersion" jdbcType="VARCHAR" />
+		<id column="client_url" property="clientUrl" jdbcType="VARCHAR" />
+		<id column="latest_server" property="latestServer" jdbcType="VARCHAR" />
+		<id column="latest_client" property="latestClient" jdbcType="VARCHAR" />
+		<id column="client_description" property="clientDescription" jdbcType="VARCHAR" />				
+	</resultMap>
+
+
+	
+	<select id="findBmsVerCount" resultType="int">
+		select 
+			 count(1) 
+		from rtv_version_map
+	</select>
+
+	
+	<select id="findBmsVer" resultMap="BmsVer">
+			select * from rtv_version_map
+	</select>
+	
+	<select id="findSpecBmsVer" resultMap="BmsVer">
+			select u.* from rtv_version_map u where u.client_os_type=#{osType}
+	</select>
+	
+	<select id="findBmsVers" resultMap="BmsVer">
+			select u.* from rtv_version_map u
+	</select>	
+	
+	<insert id="add" parameterType="com.zom.cms.model.BmsVer">
+		insert into rtv_version_map(server_version,client_os_type,client_version,client_url,latest_server,latest_client,client_description)
+        values(#{serverVersion},#{clientOsType},#{clientVersion},#{clientUrl},#{latestServer},#{latestClient},#{clientDescription})
+	</insert>
+	
+	<select id="load" resultMap="BmsVer" parameterType="long">
+		select 
+			u.*
+		from rtv_version_map u where u.id = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.zom.cms.model.BmsVer">
+		update rtv_version_map u set u.server_version = #{serverVersion},u.client_os_type = #{clientOsType},u.client_version = #{clientVersion},u.client_url = #{clientUrl},u.latest_server = #{latestServer},
+		u.latest_client = #{latestClient}, u.client_description = #{clientDescription} where u.id = #{id}
+	</update>
+	
+	
+	<delete id="delete">
+			delete from rtv_version_map where id = #{id}
+	</delete>
+	
+
+
+	<!--====================================== LHFEIYU ======================================-->
+	<sql id="table">rtv_version_map</sql><!-- 表名  -->
+	<sql id="baseColumns"><!-- 基础字段 -->
+		A.*
+	</sql>
+	<sql id="baseSearch"><!-- 基础查询条件  -->
+		<if test="id != null and id != '' ">AND A.id = #{id}</if>
+		<if test="userId != null and userId != '' ">AND A.id = #{userId}</if>
+		<if test="status != null and status != '' ">AND A.status = #{status}</if>
+	</sql>
+	<sql id="suffix"><!-- 分组排序  -->
+		<if test="groupBy != null and groupBy !='' "> GROUP BY #{groupBy,jdbcType=VARCHAR}</if>
+		<if test="orderBy != null and orderBy !='' "> 
+			<if test="selfOrder == null">ORDER BY A.${orderBy}</if>
+			<if test="selfOrder != null">ORDER BY ${orderBy}</if>
+		</if>
+		<if test="ascOrdesc != null and ascOrdesc !='' and selfOrder == null "> ${ascOrdesc}</if>
+		<if test="orderBy == null and ascOrdesc == null "> ORDER BY A.id DESC</if>
+	</sql>
+	<sql id="limitCount"><!-- 分页 -->
+		<if test="count != null and count !='' "> LIMIT ${start},${count}</if> 
+	</sql>
+	<sql id="columns"><!-- 关联它表字段 -->
+	</sql>
+	<sql id="search"><!-- 业务查询条件 -->
+		<if test="phone != null and phone !=''">
+		   AND A.phone = #{phone}
+		</if>
+		<if test="phoneLike != null and phoneLike !=''">
+		   AND A.phone LIKE '%${phoneLike}%'
+		</if>
+		
+		<if test="serverVersion != null and serverVersion !=''">
+		   AND A.server_version = #{serverVersion}
+		</if>
+		<if test="clientOsType != null and clientOsType !=''">
+		   AND A.client_os_type = #{clientOsType}
+		</if>
+		<if test="latestServer != null and latestServer !=''">
+		   AND A.latest_server = #{latestServer}
+		</if>
+		<if test="latestClient != null and latestClient !=''">
+		   AND A.latest_client = #{latestClient}
+		</if>
+		
+		
+	</sql>
+	<sql id="leftJoin"><!-- 表关联 -->
+	</sql>
+	
+	<select id="selectListByCondition" parameterType="java.util.Map" resultMap="BmsVer">
+    	SELECT 
+		A.*
+		FROM <include refid="table"/> A 
+		<include refid="leftJoin"/>
+		WHERE 1=1 
+		<include refid="baseSearch"/><include refid="search"/>
+		<include refid="suffix"/>
+		<include refid="limitCount"/>
+	</select>
+	
+	<select id="selectByCondition" parameterType="java.util.Map" resultMap="BmsVer">
+   		SELECT 
+		<include refid="baseColumns"/><include refid="columns"/>
+		FROM <include refid="table"/> A 
+		<include refid="leftJoin"/>
+		WHERE 1=1 
+		<include refid="baseSearch"/><include refid="search"/>
+		<include refid="suffix"/>
+		LIMIT 0,1 
+	</select>
+	
+	<select id="selectCountByCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM <include refid="table"/> A 
+		<include refid="leftJoin"/>
+		WHERE 1=1
+		<include refid="baseSearch"/><include refid="search"/>
+	</select>
+	<!--====================================== LHFEIYU ======================================-->
+	
+
+
+
+</mapper>

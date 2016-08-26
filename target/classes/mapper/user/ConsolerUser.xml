@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IConsolerUserDao">
+	<resultMap id="ConsolerUser" type="com.zom.cms.model.ConsolerUser">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<id column="console_display_name" property="consoleDisplayName"
+			jdbcType="VARCHAR" />
+		<id column="console_id" property="consoleId" jdbcType="VARCHAR" />
+		<id column="user_name" property="userName" jdbcType="VARCHAR" />
+		<id column="user_pwd" property="userPwd" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+
+
+	<!--====================================== LHFEIYU ====================================== -->
+	<sql id="table">rtv_consoler_user_mapping</sql><!-- 表名 -->
+	<sql id="baseColumns"><!-- 基础字段 -->
+		A.*
+	</sql>
+	<sql id="baseSearch"><!-- 基础查询条件 -->
+		<if test="showDeleted == null"><!-- 逻辑删除：status=2 -->
+			AND A.status != '2'
+		</if>
+		<if test="id != null and id != '' ">AND A.id = #{id}</if>
+		<if test="userId != null and userId != '' ">AND A.id = #{userId}</if>
+		<if test="status != null and status != '' ">AND A.status = #{status}</if>
+	</sql>
+	<sql id="suffix"><!-- 分组排序 -->
+		<if test="groupBy != null and groupBy !='' "> GROUP BY #{groupBy,jdbcType=VARCHAR}</if>
+		<if test="orderBy != null and orderBy !='' ">
+			<if test="selfOrder == null">ORDER BY A.${orderBy}</if>
+			<if test="selfOrder != null">ORDER BY ${orderBy}</if>
+		</if>
+		<if test="ascOrdesc != null and ascOrdesc !='' and selfOrder == null "> ${ascOrdesc}</if>
+		<if test="orderBy == null and ascOrdesc == null "> ORDER BY A.id DESC</if>
+	</sql>
+	<sql id="limitCount"><!-- 分页 -->
+		<if test="count != null and count !='' "> LIMIT ${start},${count}</if>
+	</sql>
+	<sql id="columns"><!-- 关联它表字段 -->
+	</sql>
+	<sql id="search"><!-- 业务查询条件 -->
+
+
+	</sql>
+	<sql id="leftJoin"><!-- 表关联 -->
+	</sql>
+
+	<insert id="add" parameterType="com.zom.cms.model.ConsolerUser">
+		insert into
+		rtv_consoler_user_mapping
+		(console_display_name,console_id,user_name,user_pwd)
+		values(#{consoleDisplayName},#{consoleId},#{userName},#{userPwd})
+	</insert>
+
+
+	<!--====================================== LHFEIYU ====================================== -->
+
+	<select id="selectByconsolerId" resultMap="ConsolerUser"
+		parameterType="Long">
+		select
+		u.*
+		from rtv_consoler_user_mapping u where u.console_id= #{id}
+	</select>
+
+	<delete id="deleteByConsolerId">
+		delete
+		from rtv_consoler_user_mapping where
+		console_id= #{id}
+	</delete>
+
+
+	<!-- 添加用户角色信息 -->
+	<insert id="addConsoler1To2">
+		insert into
+		rtv_consoler_user_mapping(console_display_name,console_id,user_name,user_pwd)
+		values(#{consoleDisplayName},#{consoleId},#{userName},#{userPwd})
+	</insert>
+
+
+	<delete id="delConsoler1To2">
+		delete from rtv_consoler_user_mapping where console_id =
+		#{consoleId} and user_name = #{userName}
+	</delete>
+
+	<select id="loadUserConsole" resultMap="ConsolerUser" parameterType="java.util.Map">
+		select * from rtv_consoler_user_mapping rum where rum.console_id = #{adminId} 
+			and rum.user_name = #{userName}
+	</select>
+
+
+</mapper>

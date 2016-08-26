@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zom.cms.dao.user.IChargeDao">
+	<resultMap id="ConsolerUser" type="com.zom.cms.model.Charge">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<id column="crop_id" property="cropId" jdbcType="VARCHAR" />
+		<id column="money" property="money" jdbcType="VARCHAR" />
+		<id column="charge_time" property="chargeTime" jdbcType="VARCHAR" />
+		<id column="charge_note" property="chargeNote" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+
+
+	<!--====================================== LHFEIYU ====================================== -->
+	<sql id="table">rtv_charge</sql><!-- 表名 -->
+	<sql id="baseColumns"><!-- 基础字段 -->
+		A.*
+	</sql>
+	<sql id="baseSearch"><!-- 基础查询条件 -->
+		<if test="showDeleted == null"><!-- 逻辑删除：status=2 -->
+			AND A.status != '2'
+		</if>
+		<if test="id != null and id != '' ">AND A.id = #{id}</if>
+		<if test="userId != null and userId != '' ">AND A.id = #{userId}</if>
+		<if test="status != null and status != '' ">AND A.status = #{status}</if>
+	</sql>
+	<sql id="suffix"><!-- 分组排序 -->
+		<if test="groupBy != null and groupBy !='' "> GROUP BY #{groupBy,jdbcType=VARCHAR}</if>
+		<if test="orderBy != null and orderBy !='' ">
+			<if test="selfOrder == null">ORDER BY A.${orderBy}</if>
+			<if test="selfOrder != null">ORDER BY ${orderBy}</if>
+		</if>
+		<if test="ascOrdesc != null and ascOrdesc !='' and selfOrder == null "> ${ascOrdesc}</if>
+		<if test="orderBy == null and ascOrdesc == null "> ORDER BY A.id DESC</if>
+	</sql>
+	<sql id="limitCount"><!-- 分页 -->
+		<if test="count != null and count !='' "> LIMIT ${start},${count}</if>
+	</sql>
+	<sql id="columns"><!-- 关联它表字段 -->
+	</sql>
+	<sql id="search"><!-- 业务查询条件 -->
+
+
+	</sql>
+	<sql id="leftJoin"><!-- 表关联 -->
+	</sql>
+
+	
+
+
+</mapper>
